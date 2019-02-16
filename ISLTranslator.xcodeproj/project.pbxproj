@@ -16,7 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FCF2CD1C220DEDAD000F1F95 /* ISL Translator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ISL Translator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FCF2CD1C220DEDAD000F1F95 /* ISLTranslator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ISLTranslator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCF2CD1F220DEDAD000F1F95 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FCF2CD21220DEDAD000F1F95 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FCF2CD24220DEDAD000F1F95 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -40,7 +40,7 @@
 		FCF2CD13220DEDAD000F1F95 = {
 			isa = PBXGroup;
 			children = (
-				FCF2CD1E220DEDAD000F1F95 /* ISL Translator */,
+				FCF2CD1E220DEDAD000F1F95 /* ISLTranslator */,
 				FCF2CD1D220DEDAD000F1F95 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,12 +48,12 @@
 		FCF2CD1D220DEDAD000F1F95 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FCF2CD1C220DEDAD000F1F95 /* ISL Translator.app */,
+				FCF2CD1C220DEDAD000F1F95 /* ISLTranslator.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FCF2CD1E220DEDAD000F1F95 /* ISL Translator */ = {
+		FCF2CD1E220DEDAD000F1F95 /* ISLTranslator */ = {
 			isa = PBXGroup;
 			children = (
 				FCF2CD31220DEECE000F1F95 /* retrained_graph.mlmodel */,
@@ -64,15 +64,15 @@
 				FCF2CD28220DEDAF000F1F95 /* LaunchScreen.storyboard */,
 				FCF2CD2B220DEDAF000F1F95 /* Info.plist */,
 			);
-			path = "ISL Translator";
+			path = "ISLTranslator";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FCF2CD1B220DEDAD000F1F95 /* ISL Translator */ = {
+		FCF2CD1B220DEDAD000F1F95 /* ISLTranslator */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FCF2CD2E220DEDAF000F1F95 /* Build configuration list for PBXNativeTarget "ISL Translator" */;
+			buildConfigurationList = FCF2CD2E220DEDAF000F1F95 /* Build configuration list for PBXNativeTarget "ISLTranslator" */;
 			buildPhases = (
 				FCF2CD18220DEDAD000F1F95 /* Sources */,
 				FCF2CD19220DEDAD000F1F95 /* Frameworks */,
@@ -82,9 +82,9 @@
 			);
 			dependencies = (
 			);
-			name = "ISL Translator";
-			productName = "ISL Translator";
-			productReference = FCF2CD1C220DEDAD000F1F95 /* ISL Translator.app */;
+			name = "ISLTranslator";
+			productName = "ISLTranslator";
+			productReference = FCF2CD1C220DEDAD000F1F95 /* ISLTranslator.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -102,7 +102,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FCF2CD17220DEDAD000F1F95 /* Build configuration list for PBXProject "ISL Translator" */;
+			buildConfigurationList = FCF2CD17220DEDAD000F1F95 /* Build configuration list for PBXProject "ISLTranslator" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -115,7 +115,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FCF2CD1B220DEDAD000F1F95 /* ISL Translator */,
+				FCF2CD1B220DEDAD000F1F95 /* ISLTranslator */,
 			);
 		};
 /* End PBXProject section */
@@ -288,7 +288,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ES2A6CKPMW;
-				INFOPLIST_FILE = "ISL Translator/Info.plist";
+				INFOPLIST_FILE = "ISLTranslator/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -306,7 +306,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ES2A6CKPMW;
-				INFOPLIST_FILE = "ISL Translator/Info.plist";
+				INFOPLIST_FILE = "ISLTranslator/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -321,7 +321,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FCF2CD17220DEDAD000F1F95 /* Build configuration list for PBXProject "ISL Translator" */ = {
+		FCF2CD17220DEDAD000F1F95 /* Build configuration list for PBXProject "ISLTranslator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FCF2CD2C220DEDAF000F1F95 /* Debug */,
@@ -330,7 +330,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FCF2CD2E220DEDAF000F1F95 /* Build configuration list for PBXNativeTarget "ISL Translator" */ = {
+		FCF2CD2E220DEDAF000F1F95 /* Build configuration list for PBXNativeTarget "ISLTranslator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FCF2CD2F220DEDAF000F1F95 /* Debug */,

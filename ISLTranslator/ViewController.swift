@@ -10,13 +10,16 @@ import AVKit
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet private weak var buttonImage: UIImageView!
+    
+    private var isRecording = false
     
     lazy var cameraSession: AVCaptureSession = {
         
         let captureSession = AVCaptureSession()
-        captureSession.sessionPreset = .medium
+        captureSession.sessionPreset = .high
         return captureSession
     }()
     
@@ -24,7 +27,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let preview =  AVCaptureVideoPreviewLayer(session: self.cameraSession)
         preview.bounds = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
         preview.position = CGPoint(x: self.view.bounds.midX, y: self.view.bounds.midY)
-        preview.videoGravity = .resize
+        preview.videoGravity = AVLayerVideoGravity.resize
         return preview
     }()
     
@@ -32,6 +35,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupButtonImage()
         
         let captureDevice = AVCaptureDevice.default(for: .video)!
         
@@ -66,7 +71,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
 
     override var shouldAutorotate: Bool {
-        return true
+        return false
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -80,17 +85,31 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        var frame = view.frame
-        frame.size.height = frame.size.height - 35.0
-        previewLayer.frame = frame
+        imageView.layer.addSublayer(previewLayer)
         
-        view.layer.addSublayer(previewLayer)
         cameraSession.startRunning()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    private func setupButtonImage() {
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(buttonImageTapped(tapGestureRecognizer:)))
+        buttonImage.isUserInteractionEnabled = true
+        buttonImage.addGestureRecognizer(tapGestureRecognizer)
+        
+    }
+    
+    @objc private func buttonImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        
+        guard let tappedImage = tapGestureRecognizer.view as? UIImageView else { return }
+        
+        isRecording = !isRecording
+        
+        tappedImage.image = isRecording ? UIImage(named: "pauseButton") : UIImage(named: "playButton")
     }
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection){
@@ -100,14 +119,19 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             
             let ciImage = CIImage(cvImageBuffer: imageBuffer)
             let img = UIImage(ciImage: ciImage).resizeTo(CGSize(width: 224, height: 224))
-            if let uiImage = img {
+            if let uiImage = img, let pixelBuffer = uiImage.buffer() {
                 
-                let pixelBuffer = uiImage.buffer()!
                 let output = try? model.prediction(input__0: pixelBuffer)
                 DispatchQueue.main.async {
                     
                     self.imageView.image = uiImage
-                    self.label.text = output?.classLabel ?? "I don't know"
+                    
+                    if self.isRecording {
+                        
+                        guard let label = output?.classLabel, let percentage = output?.final_result__0[label] else { return }
+                        
+                        self.label.text = percentage > 0.7 ? label : "I don't know"
+                    }
                 }
             }
         }
