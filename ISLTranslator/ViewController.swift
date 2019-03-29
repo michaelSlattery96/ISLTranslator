@@ -13,8 +13,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     @IBOutlet private weak var label: UILabel!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var buttonImage: UIImageView!
+    @IBOutlet private weak var topLabel: UILabel!
+    @IBOutlet private weak var midLabel: UILabel!
+    @IBOutlet private weak var lowLabel: UILabel!
     
     private var isRecording = false
+    private var previousLabel = ""
+    private var isCorrect = 0
     
     lazy var cameraSession: AVCaptureSession = {
         
@@ -110,6 +115,43 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         isRecording = !isRecording
         
         tappedImage.image = isRecording ? UIImage(named: "pauseButton") : UIImage(named: "playButton")
+        
+        //clears the text after play
+        label.text = isRecording ? "" : label.text
+    }
+    
+    private func showTopThree(_ output: [String: Double]?) {
+        
+        guard let output = output else { return }
+        
+        var topLabelString = ""
+        var midLabelString = ""
+        var lowLabelString = ""
+        
+        var topPercentage: Double = 0
+        var midPercentage: Double = 0
+        var lowPercentage: Double = 0
+        
+        for dictionary in output {
+            
+            if dictionary.value > topPercentage {
+                
+                topLabelString = dictionary.key
+                topPercentage = (dictionary.value).truncate(places: 2)
+            } else if dictionary.value < topPercentage && dictionary.value > midPercentage {
+                
+                midLabelString = dictionary.key
+                midPercentage = (dictionary.value).truncate(places: 2)
+            } else if dictionary.value < midPercentage && dictionary.value > lowPercentage {
+                
+                lowLabelString = dictionary.key
+                lowPercentage = (dictionary.value).truncate(places: 2)
+            }
+        }
+        
+        topLabel.text = topLabelString + " " + String(topPercentage)
+        midLabel.text = midLabelString + " " + String(midPercentage)
+        lowLabel.text = lowLabelString + " " + String(lowPercentage)
     }
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection){
@@ -119,7 +161,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             
             let ciImage = CIImage(cvImageBuffer: imageBuffer)
             let img = UIImage(ciImage: ciImage).resizeTo(CGSize(width: 224, height: 224))
-            if let uiImage = img, let pixelBuffer = uiImage.buffer() {
+            if let uiImage = img?.noir, let pixelBuffer = uiImage.buffer() {
                 
                 let output = try? model.prediction(input__0: pixelBuffer)
                 DispatchQueue.main.async {
@@ -130,7 +172,20 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         
                         guard let label = output?.classLabel, let percentage = output?.final_result__0[label] else { return }
                         
-                        self.label.text = percentage > 0.7 ? label : "I don't know"
+                        self.showTopThree(output?.final_result__0)
+                        
+                        if self.isCorrect == 5 {
+                            
+                            self.label.text?.append(percentage > 0.7 ? label : "")
+                            self.isCorrect += 1
+                        } else if label == self.previousLabel{
+                            
+                            self.isCorrect += 1
+                        } else {
+                            
+                            self.isCorrect = 0
+                            self.previousLabel = percentage > 0.7 ? label : ""
+                        }
                     }
                 }
             }
@@ -139,6 +194,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 }
 
 extension UIImage {
+    
+    var noir: UIImage? {
+        let context = CIContext(options: nil)
+        guard let currentFilter = CIFilter(name: "CIPhotoEffectNoir") else { return nil }
+        currentFilter.setValue(CIImage(image: self), forKey: kCIInputImageKey)
+        if let output = currentFilter.outputImage,
+            let cgImage = context.createCGImage(output, from: output.extent) {
+            return UIImage(cgImage: cgImage, scale: scale, orientation: imageOrientation)
+        }
+        return nil
+    }
     
     func buffer() -> CVPixelBuffer? {
         
@@ -180,3 +246,10 @@ extension UIImage {
     }
 }
 
+extension Double
+{
+    func truncate(places : Int)-> Double
+    {
+        return Double(floor(pow(10.0, Double(places)) * self)/pow(10.0, Double(places)))
+    }
+}

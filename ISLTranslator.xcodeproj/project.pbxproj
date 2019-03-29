@@ -7,23 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FCEA88E8224E5BCA00E59956 /* retrained_graph.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = FCEA88E7224E5BCA00E59956 /* retrained_graph.mlmodel */; };
 		FCF2CD20220DEDAD000F1F95 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF2CD1F220DEDAD000F1F95 /* AppDelegate.swift */; };
 		FCF2CD22220DEDAD000F1F95 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCF2CD21220DEDAD000F1F95 /* ViewController.swift */; };
 		FCF2CD25220DEDAD000F1F95 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCF2CD23220DEDAD000F1F95 /* Main.storyboard */; };
 		FCF2CD27220DEDAF000F1F95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FCF2CD26220DEDAF000F1F95 /* Assets.xcassets */; };
 		FCF2CD2A220DEDAF000F1F95 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCF2CD28220DEDAF000F1F95 /* LaunchScreen.storyboard */; };
-		FCF2CD32220DEECE000F1F95 /* retrained_graph.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = FCF2CD31220DEECE000F1F95 /* retrained_graph.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FCF2CD1C220DEDAD000F1F95 /* ISLTranslator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ISLTranslator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FCEA88E7224E5BCA00E59956 /* retrained_graph.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = retrained_graph.mlmodel; path = ../../FYP/Convert_Model/retrained_graph.mlmodel; sourceTree = "<group>"; };
+		FCF2CD1C220DEDAD000F1F95 /* ISLTranslator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ISLTranslator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCF2CD1F220DEDAD000F1F95 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FCF2CD21220DEDAD000F1F95 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FCF2CD24220DEDAD000F1F95 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FCF2CD26220DEDAF000F1F95 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FCF2CD29220DEDAF000F1F95 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FCF2CD2B220DEDAF000F1F95 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FCF2CD31220DEECE000F1F95 /* retrained_graph.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = retrained_graph.mlmodel; path = ../../retrained_graph.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +56,15 @@
 		FCF2CD1E220DEDAD000F1F95 /* ISLTranslator */ = {
 			isa = PBXGroup;
 			children = (
-				FCF2CD31220DEECE000F1F95 /* retrained_graph.mlmodel */,
 				FCF2CD1F220DEDAD000F1F95 /* AppDelegate.swift */,
 				FCF2CD21220DEDAD000F1F95 /* ViewController.swift */,
 				FCF2CD23220DEDAD000F1F95 /* Main.storyboard */,
 				FCF2CD26220DEDAF000F1F95 /* Assets.xcassets */,
+				FCEA88E7224E5BCA00E59956 /* retrained_graph.mlmodel */,
 				FCF2CD28220DEDAF000F1F95 /* LaunchScreen.storyboard */,
 				FCF2CD2B220DEDAF000F1F95 /* Info.plist */,
 			);
-			path = "ISLTranslator";
+			path = ISLTranslator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -82,8 +82,8 @@
 			);
 			dependencies = (
 			);
-			name = "ISLTranslator";
-			productName = "ISLTranslator";
+			name = ISLTranslator;
+			productName = ISLTranslator;
 			productReference = FCF2CD1C220DEDAD000F1F95 /* ISLTranslator.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -140,7 +140,7 @@
 			files = (
 				FCF2CD22220DEDAD000F1F95 /* ViewController.swift in Sources */,
 				FCF2CD20220DEDAD000F1F95 /* AppDelegate.swift in Sources */,
-				FCF2CD32220DEECE000F1F95 /* retrained_graph.mlmodel in Sources */,
+				FCEA88E8224E5BCA00E59956 /* retrained_graph.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,7 +288,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ES2A6CKPMW;
-				INFOPLIST_FILE = "ISLTranslator/Info.plist";
+				INFOPLIST_FILE = ISLTranslator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -306,7 +306,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ES2A6CKPMW;
-				INFOPLIST_FILE = "ISLTranslator/Info.plist";
+				INFOPLIST_FILE = ISLTranslator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
