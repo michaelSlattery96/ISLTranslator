@@ -17,9 +17,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     @IBOutlet private weak var midLabel: UILabel!
     @IBOutlet private weak var lowLabel: UILabel!
     
-    private var isRecording = false
-    private var previousLabel = ""
-    private var isCorrect = 0
+    let controller = Controller()
     
     lazy var cameraSession: AVCaptureSession = {
         
@@ -29,23 +27,57 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }()
     
     lazy var previewLayer: AVCaptureVideoPreviewLayer = {
+        
         let preview =  AVCaptureVideoPreviewLayer(session: self.cameraSession)
         preview.bounds = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
         preview.position = CGPoint(x: self.view.bounds.midX, y: self.view.bounds.midY)
         preview.videoGravity = AVLayerVideoGravity.resize
         return preview
     }()
+
+    override var shouldAutorotate: Bool {
+        
+        return false
+    }
     
-    var model = retrained_graph()
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        
+        if UIDevice.current.userInterfaceIdiom == .phone { return .allButUpsideDown }
+        else { return .all }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupButtonImage()
+        setupCameraSession()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        imageView.layer.addSublayer(previewLayer)
+        
+        cameraSession.startRunning()
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+    
+    private func setupButtonImage() {
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(buttonImageTapped(tapGestureRecognizer:)))
+        buttonImage.isUserInteractionEnabled = true
+        buttonImage.addGestureRecognizer(tapGestureRecognizer)
+    }
+    
+    private func setupCameraSession() {
         
         let captureDevice = AVCaptureDevice.default(for: .video)!
         
         do {
+            
             let deviceInput = try AVCaptureDeviceInput(device: captureDevice)
             
             cameraSession.beginConfiguration()
@@ -71,87 +103,34 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             
         }
         catch let error as NSError {
+            
             NSLog("\(error), \(error.localizedDescription)")
         }
-    }
-
-    override var shouldAutorotate: Bool {
-        return false
-    }
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
-        }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        imageView.layer.addSublayer(previewLayer)
-        
-        cameraSession.startRunning()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    private func setupButtonImage() {
-        
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(buttonImageTapped(tapGestureRecognizer:)))
-        buttonImage.isUserInteractionEnabled = true
-        buttonImage.addGestureRecognizer(tapGestureRecognizer)
-        
     }
     
     @objc private func buttonImageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         
         guard let tappedImage = tapGestureRecognizer.view as? UIImageView else { return }
         
-        isRecording = !isRecording
+        let isRecording = controller.userIsRecording()
         
         tappedImage.image = isRecording ? UIImage(named: "pauseButton") : UIImage(named: "playButton")
+
+        clearText(isRecording)
+    }
+    
+    private func clearText(_ isRecording: Bool) {
         
-        //clears the text after play
         label.text = isRecording ? "" : label.text
     }
     
-    private func showTopThree(_ output: [String: Double]?) {
+    private func showTopThree(_ output: [String: Double]) {
         
-        guard let output = output else { return }
+        let topThree = controller.getTopThree(output)
         
-        var topLabelString = ""
-        var midLabelString = ""
-        var lowLabelString = ""
-        
-        var topPercentage: Double = 0
-        var midPercentage: Double = 0
-        var lowPercentage: Double = 0
-        
-        for dictionary in output {
-            
-            if dictionary.value > topPercentage {
-                
-                topLabelString = dictionary.key
-                topPercentage = (dictionary.value).truncate(places: 2)
-            } else if dictionary.value < topPercentage && dictionary.value > midPercentage {
-                
-                midLabelString = dictionary.key
-                midPercentage = (dictionary.value).truncate(places: 2)
-            } else if dictionary.value < midPercentage && dictionary.value > lowPercentage {
-                
-                lowLabelString = dictionary.key
-                lowPercentage = (dictionary.value).truncate(places: 2)
-            }
-        }
-        
-        topLabel.text = topLabelString + " " + String(topPercentage)
-        midLabel.text = midLabelString + " " + String(midPercentage)
-        lowLabel.text = lowLabelString + " " + String(lowPercentage)
+        topLabel.text = controller.clean(topThree, position: 0)
+        midLabel.text = controller.clean(topThree, position: 1)
+        lowLabel.text = controller.clean(topThree, position: 2)
     }
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection){
@@ -163,28 +142,28 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             let img = UIImage(ciImage: ciImage).resizeTo(CGSize(width: 224, height: 224))
             if let uiImage = img?.noir, let pixelBuffer = uiImage.buffer() {
                 
-                let output = try? model.prediction(input__0: pixelBuffer)
+                let output = try? controller.graphModel.prediction(input__0: pixelBuffer)
                 DispatchQueue.main.async {
                     
                     self.imageView.image = uiImage
                     
-                    if self.isRecording {
+                    if self.controller.model.isRecording {
                         
-                        guard let label = output?.classLabel, let percentage = output?.final_result__0[label] else { return }
+                        guard let label = output?.classLabel, let percentage = output?.final_result__0[label],
+                                let final_result = output?.final_result__0 else { return }
                         
-                        self.showTopThree(output?.final_result__0)
+                        self.showTopThree(final_result)
                         
-                        if self.isCorrect == 5 {
+                        if self.controller.model.isCorrect == 5 {
                             
                             self.label.text?.append(percentage > 0.7 ? label : "")
-                            self.isCorrect += 1
-                        } else if label == self.previousLabel{
+                            self.controller.incrementIsCorrect()
+                        } else if label == self.controller.model.previousLabel{
                             
-                            self.isCorrect += 1
+                            self.controller.incrementIsCorrect()
                         } else {
                             
-                            self.isCorrect = 0
-                            self.previousLabel = percentage > 0.7 ? label : ""
+                            self.controller.resetIsCorrect(percentage, label)
                         }
                     }
                 }
@@ -243,13 +222,5 @@ extension UIImage {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image
-    }
-}
-
-extension Double
-{
-    func truncate(places : Int)-> Double
-    {
-        return Double(floor(pow(10.0, Double(places)) * self)/pow(10.0, Double(places)))
     }
 }
