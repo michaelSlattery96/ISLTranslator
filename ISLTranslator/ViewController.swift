@@ -74,7 +74,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     private func setupCameraSession() {
         
-        let captureDevice = AVCaptureDevice.default(for: .video)!
+        guard let captureDevice = AVCaptureDevice.default(for: .video) else { return }
         
         do {
             
@@ -147,25 +147,15 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     
                     self.imageView.image = uiImage
                     
-                    if self.controller.model.isRecording {
+                    self.controller.calculate(output: output, completion: { (finishedCalculating, finalResult, percentage, classLabel) in
                         
-                        guard let label = output?.classLabel, let percentage = output?.final_result__0[label],
-                                let final_result = output?.final_result__0 else { return }
-                        
-                        self.showTopThree(final_result)
-                        
-                        if self.controller.model.isCorrect == 5 {
+                        if finishedCalculating {
                             
-                            self.label.text?.append(percentage > 0.7 ? label : "")
-                            self.controller.incrementIsCorrect()
-                        } else if label == self.controller.model.previousLabel{
+                            self.showTopThree(finalResult)
                             
-                            self.controller.incrementIsCorrect()
-                        } else {
-                            
-                            self.controller.resetIsCorrect(percentage, label)
+                            self.label.text?.append(percentage > 0.7 ? classLabel : "")
                         }
-                    }
+                    })
                 }
             }
         }

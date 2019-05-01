@@ -13,10 +13,6 @@ class Controller {
     var model = ISLModel()
     var graphModel = retrained_graph()
     
-    init() {
-        
-    }
-    
     func userIsRecording() -> Bool {
         
         model.isRecording = !model.isRecording
@@ -74,6 +70,31 @@ class Controller {
     func clean(_ topThree: [[String: Double]], position: Int) -> String {
         
         return Array(topThree[position].keys)[0] + " " + String(Array(topThree[position].values)[0])
+    }
+    
+    func calculate(output: retrained_graphOutput?, completion: (Bool, [String : Double], Double, String)->()) {
+        
+        if model.isRecording {
+            
+            guard let classLabel = output?.classLabel, let percentage = output?.final_result__0[classLabel],
+                let final_result = output?.final_result__0 else { return }
+            
+            if self.model.isCorrect == 5 {
+                
+                self.incrementIsCorrect()
+                completion(true, final_result, percentage, classLabel)
+            } else if classLabel == self.model.previousLabel{
+                
+                self.incrementIsCorrect()
+            } else {
+                
+                self.resetIsCorrect(percentage, classLabel)
+            }
+            
+            completion(true, final_result, 0.0, classLabel)
+        }
+        
+        completion(false, [:], 0.0, "")
     }
 }
 
